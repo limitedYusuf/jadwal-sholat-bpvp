@@ -9,43 +9,77 @@
    </head>
 
    <body class="bg-gray-100 p-4">
-      <div id="app" class="max-w-md mx-auto bg-white p-4 rounded shadow-md">
-         <h1 class="text-2xl font-semibold mb-4">Jadwal Shalat</h1>
-         <div class="mb-4">
-            <label for="method" class="block font-medium text-gray-700">Metode Perhitungan</label>
-            <select id="method" v-model="selectedMethod" class="w-full px-3 py-2 border rounded">
-               <option v-for="method in calculationMethods" :value="method">{{ method }}</option>
-            </select>
+      <div id="app">
+         <div class="max-w-md mx-auto bg-white p-4 rounded shadow-md">
+            <h1 class="text-2xl font-semibold mb-4 text-center">Jadwal Shalat</h1>
+            <div class="mb-4">
+               <label for="method" class="block font-medium text-gray-700 text-center">Metode Perhitungan</label>
+               <select id="method" v-model="selectedMethod" class="w-full px-3 py-2 border rounded">
+                  <option v-for="method in calculationMethods" :value="method" class="text-center">{{ method }}</option>
+               </select>
+            </div>
+            <div class="mb-4">
+               <label for="applyIhtiyati" class="block font-medium text-gray-700 text-center">Terapkan Ihtiyati</label>
+               <select id="applyIhtiyati" v-model="applyIhtiyati" class="w-full px-3 py-2 border rounded">
+                  <option value="true" class="text-center">Ya</option>
+                  <option value="false" class="text-center">Tidak</option>
+               </select>
+            </div>
+            <div class="bg-white rounded shadow-md p-4 mb-4">
+               <h2 class="text-lg font-semibold mb-2 text-center">Jadwal Shalat Hari Ini untuk Metode
+                  {{ selectedMethod }}</h2>
+               <div class="table-responsive">
+                  <table class="table-auto w-full">
+                     <thead>
+                        <tr>
+                           <th class="px-4 py-2">Waktu Shalat</th>
+                           <th class="px-4 py-2">Waktu</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <tr v-for="(time, name) in PrayTimesToday" :key="name">
+                           <td class="px-4 py-2 text-center">{{ name }}</td>
+                           <td class="px-4 py-2 text-center">{{ time }}</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
          </div>
-         <!-- Tambah elemen select untuk "Terapkan Ihtiyati" -->
-         <div class="mb-4">
-            <label for="applyIhtiyati" class="block font-medium text-gray-700">Terapkan Ihtiyati</label>
-            <select id="applyIhtiyati" v-model="applyIhtiyati" class="w-full px-3 py-2 border rounded">
-               <option value="true">Ya</option>
-               <option value="false">Tidak</option>
-            </select>
+         <div class="max-w-4xl mt-4 mx-auto bg-white p-4 rounded shadow-md">
+            <div class="bg-white rounded shadow-md p-4">
+               <h2 class="text-lg font-semibold mb-2 text-center">Jadwal Shalat untuk Bulan {{ namaBulan }}</h2>
+               <div class="table-responsive">
+                  <table class="table-auto w-full">
+                     <thead>
+                        <tr>
+                           <th class="px-4 py-2">Tgl</th>
+                           <th class="px-4 py-2">Fajr</th>
+                           <th class="px-4 py-2">Dhuhr</th>
+                           <th class="px-4 py-2">Asr</th>
+                           <th class="px-4 py-2">Maghrib</th>
+                           <th class="px-4 py-2">Isha</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <tr v-for="day in dateList" :key="day.date">
+                           <td class="px-4 py-2 text-center">{{ day.date }}</td>
+                           <td class="px-4 py-2 text-center">{{ day.prayerTimes.Fajr }}</td>
+                           <td class="px-4 py-2 text-center">{{ day.prayerTimes.Dhuhr }}</td>
+                           <td class="px-4 py-2 text-center">{{ day.prayerTimes.Asr }}</td>
+                           <td class="px-4 py-2 text-center">{{ day.prayerTimes.Maghrib }}</td>
+                           <td class="px-4 py-2 text-center">{{ day.prayerTimes.Isha }}</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
          </div>
-         <div>
-            <h2 class="text-lg font-semibold mb-2">Jadwal Shalat untuk Metode {{ selectedMethod }}</h2>
-            <table class="table-auto w-full">
-               <thead>
-                  <tr>
-                     <th class="px-4 py-2">Waktu Shalat</th>
-                     <th class="px-4 py-2">Waktu</th>
-                  </tr>
-               </thead>
-               <tbody>
-                  <tr v-for="(time, name) in prayerTimes" :key="name">
-                     <td class="px-4 py-2">{{ name }}</td>
-                     <td class="px-4 py-2">{{ time }}</td>
-                  </tr>
-               </tbody>
-            </table>
-         </div>
-      </div>
-      <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
-      <script src="PrayTimes.js"></script>
-      <script src="app.js"></script>
+
+         <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+         <script src="PrayTimes.js"></script>
+         <script src="app.js"></script>
+
    </body>
 
 </html>

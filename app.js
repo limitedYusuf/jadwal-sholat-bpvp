@@ -27,7 +27,16 @@ new Vue({
          'Asr': '',
          'Maghrib': '',
          'Isha': '',
-      }
+      },
+      dateList: [],
+      PrayTimesToday: {
+         'Fajr': '',
+         'Dhuhr': '',
+         'Asr': '',
+         'Maghrib': '',
+         'Isha': '',
+      },
+      namaBulan: '',
    },
    methods: {
       calculatePrayerTimes() {
@@ -52,39 +61,92 @@ new Vue({
          }
 
          const coordinates = [-0.50, 117.12];
-         const date = new Date();
-         const times = prayTimes.getTimes(date, coordinates);
+         const currentDate = new Date();
 
-         this.prayerTimes.Fajr = times.fajr;
-         this.prayerTimes.Dhuhr = times.dhuhr;
-         this.prayerTimes.Asr = times.asr;
-         this.prayerTimes.Maghrib = times.maghrib;
-         this.prayerTimes.Isha = times.isha;
+         this.dateList = [];
+
+         const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+
+         for (let i = 1; i <= lastDay; i++) {
+            const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), i);
+            const times = prayTimes.getTimes(date, coordinates);
+
+            const day = {
+               date: this.formatDate(date),
+               prayerTimes: {
+                  Fajr: times.fajr,
+                  Dhuhr: times.dhuhr,
+                  Asr: times.asr,
+                  Maghrib: times.maghrib,
+                  Isha: times.isha,
+               }
+            };
+
+            this.dateList.push(day);
+
+            if (i === currentDate.getDate()) {
+               // Set waktu shalat hari ini
+               this.PrayTimesToday = {
+                  Fajr: times.fajr,
+                  Dhuhr: times.dhuhr,
+                  Asr: times.asr,
+                  Maghrib: times.maghrib,
+                  Isha: times.isha,
+               };
+            }
+         }
 
          if (this.applyIhtiyati === 'true') {
-            this.addIhtiyatiTime(this.prayerTimes.Fajr, 2, 'Fajr');
-            this.addIhtiyatiTime(this.prayerTimes.Dhuhr, 2, 'Dhuhr');
-            this.addIhtiyatiTime(this.prayerTimes.Asr, 2, 'Asr');
-            this.addIhtiyatiTime(this.prayerTimes.Maghrib, 2, 'Maghrib');
-            this.addIhtiyatiTime(this.prayerTimes.Isha, 2, 'Isha');
+            for (let i = 0; i < this.dateList.length; i++) {
+               const day = this.dateList[i];
+               this.addIhtiyatiTime(day.prayerTimes, 2, 'Fajr');
+               this.addIhtiyatiTime(day.prayerTimes, 2, 'Dhuhr');
+               this.addIhtiyatiTime(day.prayerTimes, 2, 'Asr');
+               this.addIhtiyatiTime(day.prayerTimes, 2, 'Maghrib');
+               this.addIhtiyatiTime(day.prayerTimes, 2, 'Isha');
+            }
+            const currentDate = new Date();
+            this.PrayTimesToday = this.dateList.find(day => parseInt(day.date) === currentDate.getDate()).prayerTimes;
          }
       },
-      addIhtiyatiTime(timeStr, minutes, prayerName) {
-         const timeParts = timeStr.split(':');
-         const hours = parseInt(timeParts[0]);
-         const newMinutes = parseInt(timeParts[1]) + minutes;
+      addIhtiyatiTime(prayerTimes, minutes, prayerName) {
+         const timeParts = prayerTimes[prayerName].split(':');
+         let hours = parseInt(timeParts[0]);
+         let newMinutes = parseInt(timeParts[1]) + minutes;
          if (newMinutes >= 60) {
             hours += 1;
             newMinutes -= 60;
          }
-         this.prayerTimes[prayerName] = `${String(hours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}`;
-      }
+         prayerTimes[prayerName] = `${String(hours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}`;
+      },
+      formatDate(date) {
+         const day = date.getDate().toString().padStart(2, '0');
+         const month = (date.getMonth() + 1).toString().padStart(2, '0');
+         return `${day}-${month}-${date.getFullYear()}`;
+      },
    },
    created() {
+      const months = [
+         'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+         'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+      ];
+      const currentDate = new Date();
+      this.namaBulan = months[currentDate.getMonth()];
+
+      const prayTimes = new PrayTimes();
+      const coordinates = [-0.50, 117.12];
+      const times = prayTimes.getTimes(currentDate, coordinates);
+      this.PrayTimesToday = {
+         Fajr: times.fajr,
+         Dhuhr: times.dhuhr,
+         Asr: times.asr,
+         Maghrib: times.maghrib,
+         Isha: times.isha,
+      };
       this.calculatePrayerTimes();
    },
    watch: {
       selectedMethod: 'calculatePrayerTimes',
       applyIhtiyati: 'calculatePrayerTimes'
-   }
+   },
 });
