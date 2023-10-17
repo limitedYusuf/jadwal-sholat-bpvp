@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Jadwal Shalat</title>
+      <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+   </head>
+
+   <body class="bg-gray-100 p-4">
+      <div id="app" class="max-w-md mx-auto bg-white p-4 rounded shadow-md">
+         <h1 class="text-2xl font-semibold mb-4">Jadwal Shalat</h1>
+         <div class="mb-4">
+            <label for="method" class="block font-medium text-gray-700">Metode Perhitungan</label>
+            <select id="method" v-model="selectedMethod" class="w-full px-3 py-2 border rounded">
+               <option v-for="method in calculationMethods" :value="method">{{ method }}</option>
+            </select>
+         </div>
+         <div>
+            <h2 class="text-lg font-semibold mb-2">Jadwal Shalat untuk Metode {{ selectedMethod }}</h2>
+            <table class="table-auto w-full">
+               <thead>
+                  <tr>
+                     <th class="px-4 py-2">Waktu Shalat</th>
+                     <th class="px-4 py-2">Waktu</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  <tr v-for="(time, name) in prayerTimes" :key="name">
+                     <td class="px-4 py-2">{{ name }}</td>
+                     <td class="px-4 py-2">{{ time }}</td>
+                  </tr>
+               </tbody>
+            </table>
+         </div>
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+      <script src="PrayTimes.js"></script>
+      <script>
+         new Vue({
+            el: '#app',
+            data: {
+               selectedMethod: 'Fiqh',
+               calculationMethods: [
+                  'Fiqh',
+                  'ISNA',
+                  'MWL',
+                  'Makkah',
+                  'Karachi',
+                  'Egypt',
+                  'Jafari',
+                  'Tehran',
+                  'Muslim World League',
+                  'Umm al-Qura',
+                  'Singapore',
+                  'Malaysia',
+                  'Turkey',
+                  'France',
+                  'North America',
+                  'Shia Ithna-Ashari',
+               ],
+               prayerTimes: {
+                  'Fajr': '',
+                  'Dhuhr': '',
+                  'Asr': '',
+                  'Maghrib': '',
+                  'Isha': '',
+               }
+            },
+            methods: {
+               calculatePrayerTimes() {
+                  const prayTimes = new PrayTimes();
+                  if (this.selectedMethod === 'Fiqh') {
+                     const coordinates = [-0.50, 117.12];
+                     const date = new Date();
+                     const fajrAngle = 20.0;
+                     const asrRatio = 'Shafii';
+                     const ishaAngle = 18.0;
+                     const imsakOffset = 10;
+
+                     prayTimes.setMethod('Custom');
+                     prayTimes.adjust({
+                        fajr: fajrAngle,
+                        asr: asrRatio,
+                        isha: ishaAngle,
+                        imsak: imsakOffset
+                     });
+                  } else {
+                     prayTimes.setMethod(this.selectedMethod);
+                  }
+
+                  const coordinates = [-0.50, 117.12];
+                  const date = new Date();
+                  const times = prayTimes.getTimes(date, coordinates);
+
+                  this.prayerTimes.Fajr = times.fajr;
+                  this.prayerTimes.Dhuhr = times.dhuhr;
+                  this.prayerTimes.Asr = times.asr;
+                  this.prayerTimes.Maghrib = times.maghrib;
+                  this.prayerTimes.Isha = times.isha;
+               }
+            },
+            created() {
+               this.calculatePrayerTimes();
+            },
+            watch: {
+               selectedMethod: 'calculatePrayerTimes'
+            }
+         });
+      </script>
+
+   </body>
+
+</html>
