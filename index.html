@@ -17,6 +17,14 @@
                <option v-for="method in calculationMethods" :value="method">{{ method }}</option>
             </select>
          </div>
+         <!-- Tambah elemen select untuk "Terapkan Ihtiyati" -->
+         <div class="mb-4">
+            <label for="applyIhtiyati" class="block font-medium text-gray-700">Terapkan Ihtiyati</label>
+            <select id="applyIhtiyati" v-model="applyIhtiyati" class="w-full px-3 py-2 border rounded">
+               <option value="true">Ya</option>
+               <option value="false">Tidak</option>
+            </select>
+         </div>
          <div>
             <h2 class="text-lg font-semibold mb-2">Jadwal Shalat untuk Metode {{ selectedMethod }}</h2>
             <table class="table-auto w-full">
@@ -35,7 +43,6 @@
             </table>
          </div>
       </div>
-
       <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
       <script src="PrayTimes.js"></script>
       <script>
@@ -43,6 +50,7 @@
             el: '#app',
             data: {
                selectedMethod: 'Fiqh',
+               applyIhtiyati: 'true',
                calculationMethods: [
                   'Fiqh',
                   'ISNA',
@@ -100,17 +108,35 @@
                   this.prayerTimes.Asr = times.asr;
                   this.prayerTimes.Maghrib = times.maghrib;
                   this.prayerTimes.Isha = times.isha;
+
+                  if (this.applyIhtiyati === 'true') {
+                     this.addIhtiyatiTime(this.prayerTimes.Fajr, 2, 'Fajr');
+                     this.addIhtiyatiTime(this.prayerTimes.Dhuhr, 2, 'Dhuhr');
+                     this.addIhtiyatiTime(this.prayerTimes.Asr, 2, 'Asr');
+                     this.addIhtiyatiTime(this.prayerTimes.Maghrib, 2, 'Maghrib');
+                     this.addIhtiyatiTime(this.prayerTimes.Isha, 2, 'Isha');
+                  }
+               },
+               addIhtiyatiTime(timeStr, minutes, prayerName) {
+                  const timeParts = timeStr.split(':');
+                  const hours = parseInt(timeParts[0]);
+                  const newMinutes = parseInt(timeParts[1]) + minutes;
+                  if (newMinutes >= 60) {
+                     hours += 1;
+                     newMinutes -= 60;
+                  }
+                  this.prayerTimes[prayerName] = `${String(hours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}`;
                }
             },
             created() {
                this.calculatePrayerTimes();
             },
             watch: {
-               selectedMethod: 'calculatePrayerTimes'
+               selectedMethod: 'calculatePrayerTimes',
+               applyIhtiyati: 'calculatePrayerTimes'
             }
          });
       </script>
-
    </body>
 
 </html>
