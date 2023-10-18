@@ -85,7 +85,6 @@ new Vue({
             this.dateList.push(day);
 
             if (i === currentDate.getDate()) {
-               // Set waktu shalat hari ini
                this.PrayTimesToday = {
                   Fajr: times.fajr,
                   Dhuhr: times.dhuhr,
@@ -130,12 +129,15 @@ new Vue({
          'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
          'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
       ];
-      const currentDate = new Date();
-      this.namaBulan = months[currentDate.getMonth()];
-
+      const currentDate = luxon.DateTime.local();
+   
+      const gmt8Time = currentDate.setZone('Asia/Makassar');
+      
+      this.namaBulan = months[gmt8Time.month];
+   
       const prayTimes = new PrayTimes();
       const coordinates = [-0.50, 117.12];
-      const times = prayTimes.getTimes(currentDate, coordinates);
+      const times = prayTimes.getTimes(gmt8Time.toJSDate(), coordinates);
       this.PrayTimesToday = {
          Fajr: times.fajr,
          Dhuhr: times.dhuhr,
@@ -144,7 +146,7 @@ new Vue({
          Isha: times.isha,
       };
       this.calculatePrayerTimes();
-   },
+   },   
    watch: {
       selectedMethod: 'calculatePrayerTimes',
       applyIhtiyati: 'calculatePrayerTimes'
