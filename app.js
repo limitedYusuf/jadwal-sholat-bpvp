@@ -131,13 +131,13 @@ new Vue({
       ];
       const currentDate = luxon.DateTime.local();
    
-      const gmt8Time = currentDate.setZone('Asia/Makassar');
+      currentDate.setZone('Asia/Makassar');
       
-      this.namaBulan = months[gmt8Time.month];
-   
+      this.namaBulan = months[currentDate.month - 1];
+      
       const prayTimes = new PrayTimes();
       const coordinates = [-0.50, 117.12];
-      const times = prayTimes.getTimes(gmt8Time.toJSDate(), coordinates);
+      const times = prayTimes.getTimes(currentDate.toJSDate(), coordinates);
       this.PrayTimesToday = {
          Fajr: times.fajr,
          Dhuhr: times.dhuhr,
@@ -146,7 +146,7 @@ new Vue({
          Isha: times.isha,
       };
       this.calculatePrayerTimes();
-   },   
+   },    
    watch: {
       selectedMethod: 'calculatePrayerTimes',
       applyIhtiyati: 'calculatePrayerTimes'
