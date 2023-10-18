@@ -39,6 +39,15 @@ new Vue({
       namaBulan: '',
    },
    methods: {
+      isCurrentDate(date) {
+         const currentDate = new Date();
+         const [day, month, year] = date.split('-').map(Number);
+         return (
+            day === currentDate.getDate() &&
+            month - 1 === currentDate.getMonth() &&
+            year === currentDate.getFullYear()
+         );
+      },
       calculatePrayerTimes() {
          const prayTimes = new PrayTimes();
          if (this.selectedMethod === 'Fiqh') {
@@ -130,11 +139,11 @@ new Vue({
          'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
       ];
       const currentDate = luxon.DateTime.local();
-   
+
       currentDate.setZone('Asia/Makassar');
-      
+
       this.namaBulan = months[currentDate.month - 1];
-      
+
       const prayTimes = new PrayTimes();
       const coordinates = [-0.50, 117.12];
       const times = prayTimes.getTimes(currentDate.toJSDate(), coordinates);
@@ -146,7 +155,7 @@ new Vue({
          Isha: times.isha,
       };
       this.calculatePrayerTimes();
-   },    
+   },
    watch: {
       selectedMethod: 'calculatePrayerTimes',
       applyIhtiyati: 'calculatePrayerTimes'

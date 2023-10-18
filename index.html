@@ -5,41 +5,58 @@
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Jadwal Shalat</title>
-      <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">      
+      <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+      <style>
+         @import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
+
+         .islamic-theme {
+            background-color: #f5f5f5;
+            font-family: 'Rubik', serif;
+         }
+
+         .islamic-text {
+            color: #00008B;
+         }
+      </style>
    </head>
 
-   <body class="bg-gray-100 p-4">
+   <body class="islamic-theme p-4">
       <div id="app">
          <div class="max-w-md mx-auto bg-white p-4 rounded shadow-md">
-            <h1 class="text-2xl font-semibold mb-4 text-center">Jadwal Shalat</h1>
+            <h1 class="text-2xl font-semibold mb-4 text-center islamic-text">Jadwal Shalat</h1>
             <div class="mb-4">
-               <label for="method" class="block font-medium text-gray-700 text-center">Metode Perhitungan</label>
+               <label for="method" class="block font-medium text-gray-700 text-center islamic-text">Metode
+                  Perhitungan</label>
                <select id="method" v-model="selectedMethod" class="w-full px-3 py-2 border rounded">
-                  <option v-for="method in calculationMethods" :value="method" class="text-center">{{ method }}</option>
+                  <option v-for="method in calculationMethods" :value="method" class="text-center islamic-text">
+                     {{ method }}
+                  </option>
                </select>
             </div>
             <div class="mb-4">
-               <label for="applyIhtiyati" class="block font-medium text-gray-700 text-center">Terapkan Ihtiyati</label>
+               <label for="applyIhtiyati" class="block font-medium text-gray-700 text-center islamic-text">Terapkan
+                  Ihtiyati</label>
                <select id="applyIhtiyati" v-model="applyIhtiyati" class="w-full px-3 py-2 border rounded">
-                  <option value="true" class="text-center">Ya</option>
-                  <option value="false" class="text-center">Tidak</option>
+                  <option value="true" class="text-center islamic-text">Ya</option>
+                  <option value="false" class="text-center islamic-text">Tidak</option>
                </select>
             </div>
-            <div class="bg-white rounded shadow-md p-4 mb-4">
-               <h2 class="text-lg font-semibold mb-2 text-center">Jadwal Shalat Hari Ini untuk Metode
-                  {{ selectedMethod }}</h2>
+            <div class="bg-white rounded shadow-md p-4">
+               <h2 class="text-lg font-semibold mb-2 text-center islamic-text">Jadwal Shalat Hari Ini untuk Metode
+                  {{ selectedMethod }}
+               </h2>
                <div class="table-responsive">
                   <table class="table-auto w-full">
                      <thead>
                         <tr>
-                           <th class="px-4 py-2">Waktu Shalat</th>
-                           <th class="px-4 py-2">Waktu</th>
+                           <th class="px-4 py-2 islamic-text">Waktu Shalat</th>
+                           <th class="px-4 py-2 islamic-text">Waktu</th>
                         </tr>
                      </thead>
                      <tbody>
                         <tr v-for="(time, name) in PrayTimesToday" :key="name">
-                           <td class="px-4 py-2 text-center">{{ name }}</td>
-                           <td class="px-4 py-2 text-center">{{ time }}</td>
+                           <td class="px-4 py-2 text-center islamic-text">{{ name }}</td>
+                           <td class="px-4 py-2 text-center islamic-text">{{ time }}</td>
                         </tr>
                      </tbody>
                   </table>
@@ -48,38 +65,51 @@
          </div>
          <div class="max-w-4xl mt-4 mx-auto bg-white p-4 rounded shadow-md">
             <div class="bg-white rounded shadow-md p-4">
-               <h2 class="text-lg font-semibold mb-2 text-center">Jadwal Shalat untuk Bulan {{ namaBulan }}</h2>
+               <h2 class="text-lg font-semibold mb-2 text-center islamic-text">Jadwal Shalat untuk Bulan {{ namaBulan }}
+               </h2>
                <div class="table-responsive">
                   <table class="table-auto w-full">
                      <thead>
                         <tr>
-                           <th class="px-4 py-2">Tgl</th>
-                           <th class="px-4 py-2">Fajr</th>
-                           <th class="px-4 py-2">Dhuhr</th>
-                           <th class="px-4 py-2">Asr</th>
-                           <th class="px-4 py-2">Maghrib</th>
-                           <th class="px-4 py-2">Isha</th>
+                           <th class="px-4 py-2 islamic-text">Tgl</th>
+                           <th class="px-4 py-2 islamic-text">Fajr</th>
+                           <th class="px-4 py-2 islamic-text">Dhuhr</th>
+                           <th class="px-4 py-2 islamic-text">Asr</th>
+                           <th class="px-4 py-2 islamic-text">Maghrib</th>
+                           <th class="px-4 py-2 islamic-text">Isha</th>
                         </tr>
                      </thead>
                      <tbody>
-                        <tr v-for="day in dateList" :key="day.date">
-                           <td class="px-4 py-2 text-center">{{ day.date }}</td>
-                           <td class="px-4 py-2 text-center">{{ day.prayerTimes.Fajr }}</td>
-                           <td class="px-4 py-2 text-center">{{ day.prayerTimes.Dhuhr }}</td>
-                           <td class="px-4 py-2 text-center">{{ day.prayerTimes.Asr }}</td>
-                           <td class="px-4 py-2 text-center">{{ day.prayerTimes.Maghrib }}</td>
-                           <td class="px-4 py-2 text-center">{{ day.prayerTimes.Isha }}</td>
+                        <tr v-for="day in dateList" :key="day.date" :class="{'bg-gray-600': isCurrentDate(day.date)}">
+                           <td :class="{'text-white': isCurrentDate(day.date)}" class="px-4 py-2 text-center">
+                              {{ day.date }}</td>
+                           <td :class="{'text-white': isCurrentDate(day.date)}" class="px-4 py-2 text-center">
+                              {{ day.prayerTimes.Fajr }}
+                           </td>
+                           <td :class="{'text-white': isCurrentDate(day.date)}" class="px-4 py-2 text-center">
+                              {{ day.prayerTimes.Dhuhr }}
+                           </td>
+                           <td :class="{'text-white': isCurrentDate(day.date)}" class="px-4 py-2 text-center">
+                              {{ day.prayerTimes.Asr }}
+                           </td>
+                           <td :class="{'text-white': isCurrentDate(day.date)}" class="px-4 py-2 text-center">
+                              {{ day.prayerTimes.Maghrib }}
+                           </td>
+                           <td :class="{'text-white': isCurrentDate(day.date)}" class="px-4 py-2 text-center">
+                              {{ day.prayerTimes.Isha }}
+                           </td>
                         </tr>
                      </tbody>
                   </table>
                </div>
             </div>
          </div>
+      </div>
 
-         <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>  
-         <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/2.0.2/luxon.min.js"></script>
-         <script src="PrayTimes.js"></script>
-         <script src="app.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/2.0.2/luxon.min.js"></script>
+      <script src="PrayTimes.js"></script>
+      <script src="app.js"></script>
 
    </body>
 
